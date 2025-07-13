@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Input Data Pertanian</title>
+  <script defer>
+    function togglePanenField() {
+      const isSudahPanen = document.getElementById('statusPanen').value === 'sudah';
+      const panenField = document.getElementById('panen');
+      const hasilField = document.getElementById('hasil');
+
+      panenField.disabled = !isSudahPanen;
+      hasilField.disabled = !isSudahPanen;
+
+      if (!isSudahPanen) {
+        panenField.value = '';
+        hasilField.value = '';
+      }
+    }
+
+    async function simpanData() {
+      const data = {
+        nama: document.getElementById('nama').value,
+        desa: document.getElementById('desa').value,
+        komoditas: document.getElementById('komoditas').value,
+        luas: document.getElementById('luas').value,
+        tanam: document.getElementById('tanam').value,
+        statusPanen: document.getElementById('statusPanen').value,
+        panen: document.getElementById('panen').value,
+        hasil: document.getElementById('hasil').value,
+        catatan: document.getElementById('catatan').value
+      };
+
+      try {
+        const response = await fetch('https://script.google.com/macros/s/PASTE_WEB_APP_URL_DISINI/exec', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert('Data berhasil disimpan ke Google Sheets!');
+          document.getElementById('form').reset();
+          togglePanenField();
+        } else {
+          alert('Gagal menyimpan data.');
+        }
+      } catch (error) {
+        alert('Terjadi kesalahan koneksi.');
+        console.error(error);
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f0f9f3;
+    }
+    .form-input {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, select, textarea, button {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Logo_Kementerian_Pertanian_Indonesia.png" alt="Logo Pertanian" style="height: 60px;">
+    <h2 style="margin: 0;">Formulir Input Data Pertanian</h2>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Lambang_Kabupaten_Banggai.png/480px-Lambang_Kabupaten_Banggai.png" alt="Logo Batui Selatan" style="height: 60px; margin-left: auto;">
+  </div>
+
+  <form id="form" onsubmit="event.preventDefault(); simpanData();">
+    <div class="form-input">
+      <label for="nama">Nama Petani</label>
+      <input type="text" id="nama" required>
+    </div>
+
+    <div class="form-input">
+      <label for="desa">Desa</label>
+      <input type="text" id="desa" required>
+    </div>
+
+    <div class="form-input">
+      <label for="komoditas">Komoditas</label>
+      <select id="komoditas" required>
+        <option value="">-- Pilih Komoditas --</option>
+        <option>Padi</option>
+        <option>Jagung</option>
+        <option>Cabai</option>
+        <option>Kacang Panjang</option>
+        <option>Tomat</option>
+        <option>Terong</option>
+      </select>
+    </div>
+
+    <div class="form-input">
+      <label for="luas">Luas Tanam (ha)</label>
+      <input type="number" id="luas" step="0.01" required>
+    </div>
+
+    <div class="form-input">
+      <label for="tanam">Tanggal Tanam</label>
+      <input type="date" id="tanam" required>
+    </div>
+
+    <div class="form-input">
+      <label for="statusPanen">Status Panen</label>
+      <select id="statusPanen" onchange="togglePanenField()" required>
+        <option value="belum">Belum Panen</option>
+        <option value="sudah">Sudah Panen</option>
+      </select>
+    </div>
+
+    <div class="form-input">
+      <label for="panen">Tanggal Panen</label>
+      <input type="date" id="panen" disabled>
+    </div>
+
+    <div class="form-input">
+      <label for="hasil">Hasil Panen (kg)</label>
+      <input type="number" id="hasil" step="0.1" disabled>
+    </div>
+
+    <div class="form-input">
+      <label for="catatan">Catatan Tambahan</label>
+      <textarea id="catatan" rows="3"></textarea>
+    </div>
+
+    <button type="submit">Simpan Data</button>
+  </form>
+
+  <div class="footer">
+    <p>Lisensi: ixzoora MTK (Mantri Tani Kecamatan) Batui Selatan Area</p>
+  </div>
+</body>
+</html>
